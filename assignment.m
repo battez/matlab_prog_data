@@ -60,13 +60,14 @@ number_replacements = 10;
 significance_levels = [0.01 0.05 0.1];
 modified_dist = add_noise(original_dist, number_replacements);
 
-fprintf('\nTest distribution (step 3): \n')
+fprintf('\nTEST Distribution (Assignment step 3): \n')
+% step 4 - test if a gaussian
 test_result = check_gaussianity(modified_dist, significance_levels);
 
 
 
 % 
-% Run our experiment 10 times:
+% Repeat our experiment 10 times:
 % i.e.: 5. Repeat steps 3 and 4 for 10 times, each time removing 10 
 % numbers in random positions from the original Gaussian sample, 
 % and replacing them with a new set of uniform deviates.
@@ -78,10 +79,10 @@ responses = []; % a table of responses to chi2gof tests we run
 
 for i = 1:number_experiments
     
-    % replace some values with uniform originated noise:
+    % repeat step 3: replace some values with uniform originated noise:
     modified_dist = add_noise(original_dist, number_replacements);
     
-    % 4. Repeat step 2. ~(run chisquare test for gaussianity)
+    % repeat step 4:  Rerun step 2. ~(run chisquare test for gaussianity)
     fprintf('\nTRIAL#%d Distribution: \n', i)
     
     to_append = check_gaussianity(modified_dist, significance_levels);
