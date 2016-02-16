@@ -12,6 +12,7 @@
 % tidy up workspace figures
 clear vars, close all
 sep = {' '}; % use in figure strings. 
+hist_axes = [-6 6 0 60]; % be consistent in histogram display
 
 % Problem description
 % 1.	
@@ -29,7 +30,7 @@ histogram(original_dist, 'BinMethod', 'fd')
 title('Histogram of original distribution, with Freedman Diaconis applied');
 xlabel('Value');
 ylabel('Frequency');
-axis([-6 6 0 50]);
+axis(hist_axes);
 
 figure('position',[100, 100, 1024, 700], ...
     'Name', 'Trials of Adding Noise to a Gaussian', ...
@@ -37,21 +38,32 @@ figure('position',[100, 100, 1024, 700], ...
 
 subplot(3, 4, 1);
 histogram(original_dist, 'BinMethod', 'fd') 
-axis([-6 6 0 50]);
+axis(hist_axes);
 
 title( 'Original Distribution') 
 std_dev = std(original_dist); % show sigma. 
 xlabel(strcat('\sigma =', sep, num2str(std_dev)));
 ylabel('Frequency');
 
-
 % 2.
 % Run a Chi-square test for Gaussianity to test the hypothesis that the
-% numbers are a sample 
-% sample from a Gaussian distribution. 
+% numbers are a sample from a Gaussian distribution. 
 % Report the result in terms of answer (yes or no) and significance level.
 fprintf('\nORIGINAL Distribution:\n')
-check_gaussianity(original_dist)
+check_gaussianity(original_dist);
+
+
+
+
+% 3. replace some values with uniform originated noise:
+number_replacements = 10;
+significance_levels = [0.01 0.05 0.1];
+modified_dist = add_noise(original_dist, number_replacements);
+figure;
+histogram(modified_dist, 'BinMethod', 'fd');
+fprintf('\nTest distribution (step 3): \n')
+test_result = check_gaussianity(modified_dist, significance_levels);
+
 
 % 
 % Run our experiment 10 times:
@@ -60,19 +72,19 @@ check_gaussianity(original_dist)
 % and replacing them with a new set of uniform deviates.
 %
 number_experiments = 10;
-number_replacements = 10;
-responses = [];
-significance_levels = [0.01 0.05 0.1];
+responses = []; % a table of responses to chi2gof tests we run
+
+
 
 for i = 1:number_experiments
     
-    % 3. replace some values with uniform originated noise:
+    % replace some values with uniform originated noise:
     modified_dist = add_noise(original_dist, number_replacements);
     
     % 4. Repeat step 2. ~(run chisquare test for gaussianity)
     fprintf('\nTRIAL#%d Distribution: \n', i)
     
-    to_append = check_gaussianity(modified_dist, significance_levels)
+    to_append = check_gaussianity(modified_dist, significance_levels);
     
     % append each run of significance level tests to our 
     % table of responses
@@ -85,13 +97,10 @@ for i = 1:number_experiments
     title(strcat('Trial #', num2str(i)))
     std_dev = std(modified_dist);
     xlabel(strcat('\sigma =', sep, num2str(std_dev)))
-    axis([-6 6 0 50])
+    axis(hist_axes)
    
 
 end;
-
-disp('final resposnes')
-responses
 
 
 % adjust text sizes in all plots
@@ -105,11 +114,11 @@ set (ax, 'visible', 'off')
 
 
 %
-% show how often the different significance levels in all the trials 
+% Show how often the different significance levels in all the trials 
 % fail to reject the null hypothesis:
 %
 
-% build up counts for each significance level 
+% build up counts for each significance level; initialise a value first 
 counts = zeros(size(significance_levels));
 
 for r = 1:length(responses)
@@ -131,9 +140,9 @@ b = bar(x, counts);
 % present data more clearly:
 title('Number Of Times The Trials Failed To Reject H_{0}');
 ylim([0 10]);
-ylabel('Counts')
+ylabel('No. Of Times')
 xlabel('Significance Level');
 
-% set the x- to the signif levels with nice decimal places
+% set the x-label to the signif levels with nice decimal places
 labels = num2str(significance_levels.','%.2f');
 set(gca, 'Xtick', 1:3, 'XTickLabel', labels, 'box','off');
