@@ -1,6 +1,6 @@
-% Eliminate some numbers, chosen at random, from a distribution, 
+% Function: Eliminate some numbers, chosen at random, from a distribution, 
 % and replace them with numbers drawn from a uniform distribution
-% of mean 0 and a given standard deviation.
+% of mean 0 and a given standard deviation. 
 function distribution = add_noise(distribution, number_replacements, ... 
     noise_std_dev)
 

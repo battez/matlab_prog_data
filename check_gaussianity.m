@@ -1,6 +1,6 @@
 
-% wrapper function for chi2gof() which checks gaussianity for some given
-% distribution and significance_levels range.
+% Function: Wrapper function for chi2gof() which checks gaussianity for 
+% some given distribution and significance level range. Returns results.
 function trial = check_gaussianity(distribution, significance_level)
    
     % default parameters:
