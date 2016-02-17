@@ -1,3 +1,6 @@
+
+% wrapper function for chi2gof() which checks gaussianity for some given
+% distribution and significance_levels range.
 function trial = check_gaussianity(distribution, significance_level)
    
     % default parameters:
@@ -17,13 +20,13 @@ function trial = check_gaussianity(distribution, significance_level)
         
         response = chi2gof(distribution, 'Alpha', alpha);
         if response(1) == 0
-            response_txt='No. Failed to reject H0';
+            resptxt='Yes, it is Gaussian, as it failed to reject H0';
              trial = [trial alpha];
             
         else
-            response_txt='Yes. Rejects H0';
+            resptxt='No, it is not Gaussian, because it does reject H0';
         end
-        fprintf ('\t\t%.2f \t\t\t%s \n', alpha, response_txt)
+        fprintf ('\t\t%.2f \t\t\t%s \n', alpha, resptxt)
        
        
     end

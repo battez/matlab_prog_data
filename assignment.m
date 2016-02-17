@@ -32,6 +32,7 @@ xlabel('Value');
 ylabel('Frequency');
 axis(hist_axes);
 
+% generate a main plot of various subplots for comparison:
 figure('position',[100, 100, 1024, 700], ...
     'Name', 'Trials of Adding Noise to a Gaussian', ...
     'Menubar', 'none')
@@ -39,20 +40,22 @@ figure('position',[100, 100, 1024, 700], ...
 subplot(3, 4, 1);
 histogram(original_dist, 'BinMethod', 'fd') 
 axis(hist_axes);
+set(gca, 'box','off');
 
 title( 'Original Distribution') 
 std_dev = std(original_dist); % show sigma. 
-xlabel(strcat('\sigma =', sep, num2str(std_dev)));
+xlabel(strcat('\sigma = standard deviation = ', sep, num2str(std_dev)));
 ylabel('Frequency');
 
 % 2.
 % Run a Chi-square test for Gaussianity to test the hypothesis that the
 % numbers are a sample from a Gaussian distribution. 
 % Report the result in terms of answer (yes or no) and significance level.
+% Null Hypothesis, H0, that data follows Gaussian distribution
+% Alternative Hypothesis, H1, that data DOES NOT follow Gaussian
+% distribution
 fprintf('\nORIGINAL Distribution:\n')
 check_gaussianity(original_dist);
-
-
 
 
 % 3. replace some values with uniform originated noise:
@@ -63,7 +66,6 @@ modified_dist = add_noise(original_dist, number_replacements);
 fprintf('\nTEST Distribution (Assignment step 3): \n')
 % step 4 - test if a gaussian
 test_result = check_gaussianity(modified_dist, significance_levels);
-
 
 
 % 
@@ -99,20 +101,9 @@ for i = 1:number_experiments
     std_dev = std(modified_dist);
     xlabel(strcat('\sigma =', sep, num2str(std_dev)))
     axis(hist_axes)
-   
+    set(gca, 'box','off');
 
 end;
-
-
-% adjust text sizes in all plots
-set(gca,'FontSize',11,'fontWeight','bold')
-set(findall(gcf,'type','text'),'FontSize',11,'fontWeight','bold')
-
-% provide some extra text for clarity:
-ax = subplot(3, 4, 12);
-text(0.0,0.0,'\sigma = standard deviation');
-set (ax, 'visible', 'off')
-
 
 %
 % Show how often the different significance levels in all the trials 
@@ -132,14 +123,13 @@ for r = 1:length(responses)
 end
  
 % plot our counts by significance level on a bar graph:
-figure;
-
+subplot(3, 4, 12);
 % bar charts won't work with real numbered vector so, convert to integer
 x = 1:length(significance_levels);
 b = bar(x, counts);
 
 % present data more clearly:
-title('Number Of Times The Trials Failed To Reject H_{0}');
+title('Total No. Failures To Reject H_{0}');
 ylim([0 10]);
 ylabel('No. Of Times')
 xlabel('Significance Level');

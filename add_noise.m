@@ -23,7 +23,8 @@ function distribution = add_noise(distribution, number_replacements, ...
  
     b = noise_std_dev * sqrt(3);
     
-    % MATLAB gives us random numbers between 0 and 1, so adjusting:
+    % MATLAB gives us random numbers between 0 and 1, so adjusting to 
+    % satisfy centre on mean 0 and with std 3 :
     noise_vector = rand(number_replacements, 1) * (2 * b) - b;
    
     % get unique integers (without replacement)
